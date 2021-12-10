@@ -16,12 +16,12 @@ Z.B. für Azure Background Services kann dies nützlich sein, da hier für die K
 
 ## Logging
 
-Seit .Net Core gibts ILogger oder ILoggerFactory für verschiedene Provider.
+Seit .Net Core gibt es ILogger und ILoggerFactory für verschiedene Provider.
 
-Durch Host.CreateDefaultBuilder bekommt man einige Provider automatisch konfiguriert.
+Durch Host.CreateDefaultBuilder werden einige Provider automatisch konfiguriert.
 [CreateDefaultBuilder implementation](https://source.dot.net/#Microsoft.Extensions.Hosting/Host.cs,f78c881a376d7fa4)
 [Defaults Implementation](https://source.dot.net/#Microsoft.Extensions.Hosting/HostingHostBuilderExtensions.cs,5d86d5acb42aaed3)
-Host.CreateDefault Builder ermöglicht von selber (im Bezug auf logging):
+Host.CreateDefaultBuilder ermöglicht automatisch (im Bezug auf logging):
 * falls Windows, wird ein logging-Filter eingetragen, für den EventLogLoggerProvider, welcher in den Windows-Event-View (=Event tracing für Windows) loggt.
 * falls Windows => logging.AddEventlog() für das loggen in die Windows-Event-View
 * falls nicht im Browser => logging.AddConsole()
@@ -29,9 +29,9 @@ Host.CreateDefault Builder ermöglicht von selber (im Bezug auf logging):
 * logging.AddEventSourceLogger() (definierte Datei in Windows und Linux)
 * logging.AddConfiguration(hostingContext.Configuration.GetSection("Logging")) (für eigenes Konfigurieren von Logging)
 
-Angeben eines Loglevel => es wird für das angegebene Level oder höher geloggt.
+Angeben eines Loglevels => es wird für das angegebene Level oder höher geloggt.
 logging.ClearProvider() => default einstellungen werden gelöscht.
-logging.AddApplicationInsights(<Application Insights Key>) => Application Insights von Azure benutzen.:
+logging.AddApplicationInsights(<Application Insights Key>) => Application Insights von Azure benutzen.
 
 File loggen => z.B. mit Serilog Nuget Package:  
 ```csharp
@@ -39,22 +39,17 @@ builder.AddConfiguration(configuration.GetSection("Logging"))
 .AddSerilog(new LoggerConfiguration().writeTo.File("logFile.txt").CreateLogger())
 ```
 
-in der Klasse kann nun der ILogger<Klasse> injected werden und dort verwendet werden mit z.B.
+in der Klasse kann nun der ILogger<Klasse> injected werden und dort verwendet werden mit z.B. (Extensions .LogError .LogDebug ersparrt LogLevel angeben)
 ```csharp
 _logger.Log(LogLevel.Debug, "test logging")
-(Extensions .LogError .LogDebug ersparrt LogLevel angeben)
 ```
-
-Anstatt ILogger kann man auch ILoggerFactory injecten und mit diesem einen Logger erstellen und diesen verwenden
-
+Anstatt ILogger kann auch die ILoggerFactory injected werden und damit ein Logger erstellt werden
 
 Activity 
-für z.b. wenn ich eine Methode aufrufe, die eine Methode aufruft und ich wissen möchte zu welcher methode was dazu gehört, können die Logs durch Activitys hierarchisch ausgeben werden
+für z.b. wenn ich eine Methode aufrufe, die eine Methode aufruft und ich wissen möchte zu welcher methode was dazu gehört, können die Logs durch Activitys hierarchisch ausgeben werden.
 ActivitySource schreibt in einen static member eine activity ID hinein sobald eine Activity gestartet wird.
 die Log Methoden, wie z.b.
-_logger.LogError verwendet diese ActivityID und ein Tool welches dies unterstützt kann dies dann hierachisch ausgeben.
-
-
+_logger.LogError verwendet diese ActivityID und ein Tool welches dies unterstützt kann diese dann hierachisch ausgeben.
 
 
 ## Event Counter Api
