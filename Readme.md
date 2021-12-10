@@ -96,10 +96,10 @@ dotnet-trace (für logging)
  man kann sich reinhängen in die Prozesse wo man logging collecten kann 
 
 dotnet counters (für monitoring)
- list = stellt liste der counters dar
- ps = gibt die dotnet prozesse an die gemonitored werden können
- collect = monitored in ein file
- monitor = startet monitoring einer .Net Applikation
+* list = stellt liste der counters dar
+* ps = gibt die dotnet prozesse an die gemonitored werden können
+* collect = monitored in ein file
+* monitor = startet monitoring einer .Net Applikation
 
 dotnet dump (für analyse von dumps)
 
